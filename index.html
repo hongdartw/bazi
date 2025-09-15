@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>干支學八字計算</title>
+    <link rel="stylesheet" href="style.css">
+    <script src="https://cdn.jsdelivr.net/npm/lunar-javascript/lunar.min.js"></script>
+</head>
+<body>
+    <div class="container">
+        <h1>干支學八字計算</h1>
+
+        <div class="input-section">
+            <div class="input-group">
+                <label for="year">出生年</label>
+                <input type="number" id="year" placeholder="出生西元年(如:1980)">
+            </div>
+            <div class="input-group">
+                <label for="month">出生月</label>
+                <input type="number" id="month" placeholder="出生月份">
+            </div>
+            <div class="input-group">
+                <label for="day">出生日</label>
+                <input type="number" id="day" placeholder="出生日">
+            </div>
+            <div class="input-group">
+                <label for="hour">出生時</label>
+                <input type="number" id="hour" placeholder="出生時0~24">
+            </div>
+        </div>
+
+        <div class="input-group">
+            <label>日曆類型</label>
+            <div class="switch-field">
+                <input type="radio" id="gregorian" name="calendar" value="gregorian" checked/>
+                <label for="gregorian">西曆</label>
+                <input type="radio" id="lunar" name="calendar" value="lunar"/>
+                <label for="lunar">農曆</label>
+            </div>
+        </div>
+
+        <div class="input-group leap-month-container" id="leap-month-group" style="display: none;">
+            <input type="checkbox" id="leap-month">
+            <label for="leap-month">閏月</label>
+        </div>
+
+        <button id="calculate-btn">干支計算</button>
+
+        <div id="result-section">
+            <h2>◎四柱</h2>
+            <div id="result"></div>
+            <h2>◎大運</h2>
+            <div id="da-yun">
+                <table id="da-yun-table">
+                    <thead>
+                        <tr>
+                            <th>大運順序</th>
+                            <th>大運起始年</th>
+                            <th>歲數I</th>
+                            <th>歲數II</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <!-- Data will be populated by script.js -->
+                    </tbody>
+                </table>
+            </div>
+            <h2 id="ganzhi-count-heading">◎干支數計算</h2>
+            <div id="ganzhi-count"></div>
+        </div>
+
+        <div id="tianxing-wuxing">
+            <h2>◎天性五行生剋</h2>
+            <div class="tab">
+                <button class="tablinks" onclick="openPillarTab(event, 'year-pillar')">年柱</button>
+                <button class="tablinks" onclick="openPillarTab(event, 'month-pillar')">月柱</button>
+                <button class="tablinks" onclick="openPillarTab(event, 'day-pillar')">日柱</button>
+                <button class="tablinks" onclick="openPillarTab(event, 'hour-pillar')">時柱</button>
+            </div>
+
+            <div id="year-pillar" class="tabcontent"></div>
+            <div id="month-pillar" class="tabcontent"></div>
+            <div id="day-pillar" class="tabcontent"></div>
+            <div id="hour-pillar" class="tabcontent"></div>
+        </div>
+    </div>
+    <script src="script.js?v=1.4"></script>
+</body>
+</html>

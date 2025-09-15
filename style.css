@@ -1,0 +1,251 @@
+/* Basic Reset */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+    background-color: #f8f9fa;
+    color: #212529;
+    line-height: 1.6;
+    padding: 2rem;
+}
+
+.container {
+    max-width: 800px;
+    margin: 0 auto;
+    background-color: #fff;
+    padding: 3rem;
+    border-radius: 8px;
+    box-shadow: 0 8px 24px rgba(0,0,0,0.05);
+}
+
+h1, h2 {
+    text-align: center;
+    margin-bottom: 2rem;
+    font-weight: 300;
+}
+
+h1 {
+    font-size: 2.5rem;
+    font-weight: bold;
+}
+
+h2 {
+    color: #6c757d;
+    font-size: 1.2rem;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+}
+
+.input-section {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+    gap: 1.5rem;
+    margin-bottom: 2rem;
+}
+
+.input-group {
+    display: flex;
+    flex-direction: column;
+}
+
+label {
+    margin-bottom: 0.5rem;
+    font-size: 0.9rem;
+    color: #6c757d;
+}
+
+input[type="number"] {
+    padding: 0.75rem;
+    border: 1px solid #ced4da;
+    border-radius: 4px;
+    font-size: 1rem;
+    transition: border-color 0.2s, box-shadow 0.2s;
+}
+
+input[type="number"]:focus {
+    outline: none;
+    border-color: #80bdff;
+    box-shadow: 0 0 0 0.2rem rgba(0,123,255,.25);
+}
+
+#calculate-btn {
+    grid-column: 1 / -1;
+    padding: 1rem;
+    font-size: 1.1rem;
+    background-color: #343a40;
+    color: #fff;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    transition: background-color 0.3s;
+    margin-top: 2rem;
+    margin-bottom: 2rem;
+}
+
+#calculate-btn:hover {
+    background-color: #495057;
+}
+
+#result {
+    text-align: center;
+    margin: 3rem 0;
+}
+
+#result p {
+    font-size: 1.1rem;
+    color: #495057;
+}
+
+#result .pillar-text {
+    font-size: 2.5rem;
+    font-weight: 500;
+    color: #212529;
+}
+
+/* Excel-like Tabs */
+.tab {
+    display: flex;
+}
+
+.tab button {
+    background-color: transparent;
+    border: none;
+    outline: none;
+    cursor: pointer;
+    padding: 1rem 1.5rem;
+    transition: 0.3s;
+    font-size: 1rem;
+    border-bottom: 2px solid transparent;
+    margin-bottom: -1px;
+    color: #6c757d;
+}
+
+.tab button:hover {
+    color: #0056b3;
+}
+
+.tab button.active {
+    border-color: #007bff;
+    color: #007bff;
+}
+
+.tabcontent {
+  display: none;
+  padding: 1.5rem 0;
+}
+
+.tabcontent h3 {
+    font-size: 1.5rem;
+    font-weight: 500;
+    margin-bottom: 1.5rem;
+}
+
+.info-item {
+    display: flex;
+    margin-bottom: 1.5rem;
+    color: #495057;
+}
+
+.info-label {
+    flex-shrink: 0;
+    margin-right: 0.5em;
+    font-weight: bold;
+    font-size: 1.1rem;
+}
+
+.ganzhi-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    gap: 1rem;
+}
+
+#ganzhi-count {
+    display: none;
+}
+
+.leap-month-container {
+    flex-direction: row;
+    align-items: center;
+}
+
+.leap-month-container input[type="checkbox"] {
+    width: auto;
+    margin-right: 0.5rem;
+}
+
+.leap-month-container label {
+    margin-bottom: 0;
+}
+
+#result + h2,
+#tianxing-wuxing {
+    margin-top: 3rem;
+    padding-top: 2rem;
+    border-top: 1px solid #dee2e6;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+    .container {
+        padding: 2rem;
+    }
+    h1 {
+        font-size: 2rem;
+    }
+}
+
+@media (max-width: 600px) {
+    body {
+        padding: 1rem;
+    }
+    .container {
+        padding: 1.5rem;
+    }
+    .input-section {
+        grid-template-columns: 1fr;
+    }
+}
+
+#da-yun {
+    margin-bottom: 3rem;
+}
+
+#da-yun-table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 1.5rem;
+}
+
+#da-yun-table th,
+#da-yun-table td {
+    border: 1px solid #dee2e6;
+    padding: 0.75rem;
+    text-align: center;
+}
+
+#da-yun-table th {
+    background-color: #f8f9fa;
+    font-weight: 500;
+}
+
+#ganzhi-count-heading {
+    padding-top: 2rem;
+    border-top: 1px solid #dee2e6;
+}
+
+#result-section {
+    padding-top: 2rem;
+    border-top: 1px solid #dee2e6;
+}
+
+#result-section h2,
+#ganzhi-count-heading,
+#tianxing-wuxing h2 {
+    text-align: left;
+    font-weight: bold;
+    text-decoration: underline;
+}
