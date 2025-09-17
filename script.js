@@ -370,6 +370,141 @@ const tianxingData = {
     }
 };
 
+document.addEventListener('DOMContentLoaded', loadRecentInputs);
+
+document.getElementById('calculate-btn').addEventListener('click', calculateBazi);
+
+document.addEventListener('keydown', function(event) {
+    if (event.key === 'Enter') {
+        calculateBazi();
+    }
+});
+
+document.getElementsByName('calendar').forEach(radio => {
+    radio.addEventListener('change', function() {
+        document.getElementById('leap-month-group').style.display = this.value === 'lunar' ? 'flex' : 'none';
+        updatePlaceholders(this.value);
+        updateBirthdayDisplay();
+    });
+});
+
+['year', 'month', 'day'].forEach(id => {
+    document.getElementById(id).addEventListener('input', updateBirthdayDisplay);
+});
+
+function updateBirthdayDisplay() {
+    const year = parseInt(document.getElementById('year').value);
+    const month = parseInt(document.getElementById('month').value);
+    const day = parseInt(document.getElementById('day').value);
+    const isLunarInput = document.getElementById('lunar').checked;
+    const isLeap = document.getElementById('leap-month').checked;
+    const displayDiv = document.getElementById('birthday-display');
+
+    if (isNaN(year) || isNaN(month) || isNaN(day)) {
+        displayDiv.innerHTML = '請輸入完整的出生年月日';
+        return;
+    }
+
+    try {
+        if (isLunarInput) {
+            const lunarMonth = isLeap ? -month : month;
+            const solar = Lunar.fromYmd(year, lunarMonth, day).getSolar();
+            displayDiv.innerHTML = `西曆: ${solar.getYear()}年${solar.getMonth()}月${solar.getDay()}日 | 農曆: ${year}年${isLeap ? '閏' : ''}${month}月${day}日`;
+        } else {
+            const lunar = Lunar.fromDate(new Date(year, month - 1, day));
+            displayDiv.innerHTML = `西曆: ${year}年${month}月${day}日 | 農曆: ${lunar.getYearInGanZhi()}${lunar.getYearShengXiao()}年 ${lunar.getMonthInChinese()}月${lunar.getDayInChinese()}`;
+        }
+    } catch (e) {
+        displayDiv.innerHTML = '日期格式不正確';
+    }
+}
+
+function loadRecentInputs() {
+    const recentInputs = JSON.parse(localStorage.getItem('baziRecentInputs')) || [];
+    renderRecentInputs(recentInputs);
+}
+
+function saveRecentInput(input) {
+    let recentInputs = JSON.parse(localStorage.getItem('baziRecentInputs')) || [];
+    // Avoid duplicates
+    recentInputs = recentInputs.filter(item => !(item.year === input.year && item.month === input.month && item.day === input.day && item.hour === input.hour && item.isLunar === input.isLunar && item.isLeap === input.isLeap));
+    recentInputs.unshift(input);
+    if (recentInputs.length > 5) {
+        recentInputs.pop();
+    }
+    localStorage.setItem('baziRecentInputs', JSON.stringify(recentInputs));
+    renderRecentInputs(recentInputs);
+}
+
+function renderRecentInputs(recentInputs) {
+    const list = document.getElementById('recent-inputs-list');
+    list.innerHTML = '';
+    recentInputs.forEach((input, index) => {
+        const li = document.createElement('li');
+        const dateString = input.isLunar ? `農曆 ${input.year}-${input.month}-${input.day}${input.isLeap ? ' (閏)' : ''}` : `西曆 ${input.year}-${input.month}-${input.day}`;
+        
+        const nameDiv = document.createElement('div');
+        nameDiv.className = 'name';
+        nameDiv.contentEditable = true;
+        nameDiv.setAttribute('data-index', index);
+        nameDiv.textContent = input.name || '點此編輯名稱';
+
+        nameDiv.addEventListener('focus', (e) => {
+            if (e.target.textContent === '點此編輯名稱') {
+                setTimeout(() => { // Use timeout to ensure focus is set before selection
+                    const range = document.createRange();
+                    range.selectNodeContents(e.target);
+                    const selection = window.getSelection();
+                    selection.removeAllRanges();
+                    selection.addRange(range);
+                }, 1);
+            }
+        });
+
+        nameDiv.addEventListener('blur', (e) => {
+            const index = e.target.getAttribute('data-index');
+            let recentInputs = JSON.parse(localStorage.getItem('baziRecentInputs')) || [];
+            if (recentInputs[index]) {
+                recentInputs[index].name = e.target.textContent;
+                localStorage.setItem('baziRecentInputs', JSON.stringify(recentInputs));
+            }
+        });
+
+        const deleteBtn = document.createElement('button');
+        deleteBtn.className = 'delete-btn';
+        deleteBtn.innerHTML = '&times;'; // A simple "x" for the delete icon
+        deleteBtn.setAttribute('data-index', index);
+
+        deleteBtn.addEventListener('click', (e) => {
+            e.stopPropagation(); // Prevent the li click event from firing
+            const indexToDelete = parseInt(e.target.getAttribute('data-index'));
+            let recentInputs = JSON.parse(localStorage.getItem('baziRecentInputs')) || [];
+            recentInputs.splice(indexToDelete, 1);
+            localStorage.setItem('baziRecentInputs', JSON.stringify(recentInputs));
+            renderRecentInputs(recentInputs);
+        });
+
+        li.innerHTML = `<div class="date">${dateString}</div>`;
+        li.appendChild(nameDiv);
+        li.appendChild(deleteBtn); // Append the button
+
+        li.addEventListener('click', (e) => {
+            if (e.target.className !== 'name' && e.target.className !== 'delete-btn') {
+                document.getElementById('year').value = input.year;
+                document.getElementById('month').value = input.month;
+                document.getElementById('day').value = input.day;
+                document.getElementById('hour').value = input.hour;
+                document.getElementById(input.isLunar ? 'lunar' : 'gregorian').checked = true;
+                document.getElementById('leap-month').checked = input.isLeap;
+                document.getElementById('leap-month-group').style.display = input.isLunar ? 'flex' : 'none';
+                updateBirthdayDisplay();
+                calculateBazi();
+            }
+        });
+        list.appendChild(li);
+    });
+}
+
 function openPillarTab(evt, pillarName) {
   var i, tabcontent, tablinks;
   tabcontent = document.getElementsByClassName("tabcontent");
@@ -542,54 +677,25 @@ const fortuneData = {
     '癸亥': '身穿錦衣逐黃袍'
 };
 
-document.getElementById('calculate-btn').addEventListener('click', calculateBazi);
-
-document.addEventListener('keydown', function(event) {
-    if (event.key === 'Enter') {
-        calculateBazi();
-    }
-});
-
-document.getElementsByName('calendar').forEach(radio => {
-    radio.addEventListener('change', function() {
-        document.getElementById('leap-month-group').style.display = this.value === 'lunar' ? 'flex' : 'none';
-        updatePlaceholders(this.value);
-    });
-});
-
-function updatePlaceholders(calendarType) {
-    const monthInput = document.getElementById('month');
-    const dayInput = document.getElementById('day');
-    const hourInput = document.getElementById('hour');
-
-    if (calendarType === 'gregorian') {
-        monthInput.placeholder = '出生月(1~12)';
-        dayInput.placeholder = '出生日(1~31)';
-    } else {
-        monthInput.placeholder = '農曆出生月(1~12)';
-        dayInput.placeholder = '農曆出生日(1~30)';
-    }
-    hourInput.placeholder = '出生時間(0~24)';
-}
-
-// Set initial placeholders
-updatePlaceholders('gregorian');
-
 function calculateBazi() {
-    let year = parseInt(document.getElementById('year').value);
-    let month = parseInt(document.getElementById('month').value);
-    let day = parseInt(document.getElementById('day').value);
+    const rawYear = parseInt(document.getElementById('year').value);
+    const rawMonth = parseInt(document.getElementById('month').value);
+    const rawDay = parseInt(document.getElementById('day').value);
     const hour = parseInt(document.getElementById('hour').value);
 
-    if (isNaN(year) || isNaN(month) || isNaN(day) || isNaN(hour)) {
+    if (isNaN(rawYear) || isNaN(rawMonth) || isNaN(rawDay) || isNaN(hour)) {
         alert('輸入有效的年、月、日、時');
         return;
     }
 
     const isLunar = document.getElementById('lunar').checked;
+    const isLeap = document.getElementById('leap-month').checked;
+
+    let year = rawYear;
+    let month = rawMonth;
+    let day = rawDay;
+
     if (isLunar) {
-        const isLeap = document.getElementById('leap-month').checked;
-        
         if (isLeap) {
             const leapMonth = LunarYear.fromYear(year).getLeapMonth();
             if (leapMonth === 0) {
@@ -640,6 +746,32 @@ function calculateBazi() {
     if(document.getElementsByClassName('tablinks')[0]){
         document.getElementsByClassName('tablinks')[0].click();
     }
+
+    const recentInputs = JSON.parse(localStorage.getItem('baziRecentInputs')) || [];
+    let existingName = '';
+    const existingEntry = recentInputs.find(item => 
+        item.year === rawYear && 
+        item.month === rawMonth && 
+        item.day === rawDay && 
+        item.hour === hour && 
+        item.isLunar === isLunar && 
+        item.isLeap === isLeap
+    );
+
+    if (existingEntry) {
+        existingName = existingEntry.name;
+    }
+
+    // Save the input
+    saveRecentInput({
+        year: rawYear,
+        month: rawMonth,
+        day: rawDay,
+        hour: hour,
+        isLunar: isLunar,
+        isLeap: isLeap,
+        name: existingName || ''
+    });
 }
 
 function updateTianxingWuxing(pillars) {

@@ -13,13 +13,91 @@ body {
     padding: 2rem;
 }
 
+.main-content {
+    display: flex;
+    gap: 2rem;
+}
+
 .container {
+    flex-grow: 1;
     max-width: 800px;
-    margin: 0 auto;
     background-color: #fff;
     padding: 3rem;
     border-radius: 8px;
     box-shadow: 0 8px 24px rgba(0,0,0,0.05);
+}
+
+#recent-inputs-section {
+    width: 300px;
+    flex-shrink: 0;
+    background-color: #fff;
+    padding: 2rem;
+    border-radius: 8px;
+    box-shadow: 0 8px 24px rgba(0,0,0,0.05);
+}
+
+#recent-inputs-section h3 {
+    font-size: 1.2rem;
+    font-weight: bold;
+    margin-bottom: 1.5rem;
+    text-align: center;
+}
+
+#recent-inputs-list {
+    list-style: none;
+}
+
+#recent-inputs-list li {
+    position: relative; /* Needed for absolute positioning of the button */
+    padding: 1rem;
+    border-bottom: 1px solid #eee;
+    cursor: pointer;
+    transition: background-color 0.2s;
+}
+
+#recent-inputs-list li:hover {
+    background-color: #f1f3f5;
+}
+
+#recent-inputs-list li .date {
+    font-weight: bold;
+}
+
+#recent-inputs-list li .name {
+    font-size: 0.9rem;
+    color: #6c757d;
+}
+
+.delete-btn {
+    position: absolute;
+    top: 50%;
+    right: 1rem;
+    transform: translateY(-50%);
+    background-color: #dc3545;
+    color: white;
+    border: none;
+    border-radius: 50%;
+    width: 24px;
+    height: 24px;
+    font-size: 16px;
+    line-height: 24px;
+    text-align: center;
+    cursor: pointer;
+    opacity: 0; /* Hidden by default */
+    transition: opacity 0.2s;
+}
+
+#recent-inputs-list li:hover .delete-btn {
+    opacity: 1; /* Show on hover */
+}
+
+#birthday-display {
+    background-color: #e9ecef;
+    padding: 1rem;
+    border-radius: 4px;
+    margin-bottom: 2rem;
+    text-align: center;
+    font-size: 1.1rem;
 }
 
 h1, h2 {
@@ -189,6 +267,15 @@ input[type="number"]:focus {
 }
 
 /* Responsive */
+@media (max-width: 1200px) {
+    .main-content {
+        flex-direction: column;
+    }
+    #recent-inputs-section {
+        width: 100%;
+    }
+}
+
 @media (max-width: 768px) {
     .container {
         padding: 2rem;
